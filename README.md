@@ -10,7 +10,11 @@ When run, a System Tray Icon appears with the Soma FM "s" in one of the followin
 
 Your regular multi-media controls should work (pause, play, mute, volume up and down). 
 
-In Windows 10, to make the icon permanently visible, just click the ^ and drag the "s" to the system tray area.
+## Controls
+
+- Left click on the system tray icon or use your play/pause keyboard button to toggle play/pause.
+- Right click on system tray icon to bring up more Soma FM stations and to set preferences.
+- In Windows 10, to make the icon permanently visible, just click the ^ and drag the "s" to the system tray area.
 
 ## Known issues
 
