@@ -1,0 +1,4 @@
+F:\Projects\SomaFm\Source\SomaFm\bin\Debug\SomaFm.exe
+F:\Projects\SomaFm\Source\SomaFm\bin\Debug\SomaFm.pdb
+F:\Projects\SomaFm\Source\SomaFm\obj\Debug\SomaFm.exe
+F:\Projects\SomaFm\Source\SomaFm\obj\Debug\SomaFm.pdb
