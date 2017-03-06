@@ -5,7 +5,7 @@ Soma FM is a fork of the GaGa app, specifically for Soma FM.
 
 When run, a System Tray Icon appears with the Soma FM "s" in one of the following colors:
 - Red: music is playing.
-- Red: music is playing, but muted.
+- Dark Red: music is playing, but muted.
 - Green: no music is playing.
 
 Your regular multi-media controls should work (pause, play, mute, volume up and down). 
