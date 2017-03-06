@@ -1,7 +1,7 @@
 
 ## About
 
-Soma FM is a fork of the GaGa app, specifically for Som FM
+Soma FM is a fork of the GaGa app, specifically for Soma FM
 
 ## The streams file
 
