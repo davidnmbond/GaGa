@@ -1,30 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="Soma FM" Language="1033" Version="1.0.0.0" Manufacturer="David Bond" UpgradeCode="33cf1d20-b823-48af-93e0-0fbd9cf8cd99">
+	<Product Id="*" Name="Soma FM" Language="1033" Version="!(bind.FileVersion.SomaFm.exe)" Manufacturer="David Bond" UpgradeCode="33cf1d20-b823-48af-93e0-0fbd9cf8cd99">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
+		<Media Id="1" Cabinet="cab1.cab" EmbedCab="yes" />
 
-		<Feature Id="ProductFeature" Title="SomaFm.Setup" Level="1">
+	<DirectoryRef Id="ApplicationProgramsFolder">
+			<Component Id="ApplicationShortcut" Guid="59BA36CD-349C-4D0C-80C8-E0290952F831">
+				<Shortcut Id="ApplicationStartMenuShortcut"
+							 Name="Soma FM"
+							 Description="Soma FM Tray player"
+							 Target="[#SomaFm.exe]"
+							 WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+				<RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</DirectoryRef>
+
+
+	<Feature Id="ProductFeature" Title="Soma FM Tray Icon" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
 	</Product>
+
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="SomaFm.Setup" />
+				<Directory Id="INSTALLFOLDER" Name="Soma FM">
+				</Directory>
+			</Directory>
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="Soma FM"/>
 			</Directory>
 		</Directory>
 	</Fragment>
 
+	
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
+			 <Component Id="ProductComponent">
+				 <File Id="SomaFm.exe" Name="SomaFm.exe" Source="$(var.ProjectDir)..\SomaFm\bin\Release\SomaFm.exe" />
+				 <File Id="Streams.ini" Name="Streams.ini" Source="$(var.ProjectDir)..\SomaFm\bin\Release\Streams.ini" />
+				 <File Id="SomaFm.dat" Name="SomaFm.dat" Source="$(var.ProjectDir)..\SomaFm\bin\Release\SomaFm.dat" />
+			 </Component>
 		</ComponentGroup>
 	</Fragment>
 </Wix>

@@ -15,10 +15,10 @@
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>SomaFm.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>NotifyIconPlayer\Resources\Idle.ico</ApplicationIcon>
+    <ApplicationIcon>Playing.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -80,6 +80,17 @@
     <EmbeddedResource Include="NotifyIconPlayer\Resources\Idle.ico" />
     <EmbeddedResource Include="NotifyIconPlayer\Resources\Playing-muted.ico" />
     <EmbeddedResource Include="NotifyIconPlayer\Resources\Playing.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Playing.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SomaFm.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Streams.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

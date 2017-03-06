@@ -1,0 +1,6 @@
+F:\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.dat
+F:\Projects\SomaFm\Source\SomaFm\bin\Release\Streams.ini
+F:\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.exe
+F:\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.pdb
+F:\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.exe
+F:\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.pdb

@@ -1,0 +1,3 @@
+F:\Projects\SomaFm\Source\SomaFm.Setup\..\SomaFm\bin\Release\SomaFm.dat
+F:\Projects\SomaFm\Source\SomaFm.Setup\..\SomaFm\bin\Release\SomaFm.exe
+F:\Projects\SomaFm\Source\SomaFm.Setup\..\SomaFm\bin\Release\Streams.ini

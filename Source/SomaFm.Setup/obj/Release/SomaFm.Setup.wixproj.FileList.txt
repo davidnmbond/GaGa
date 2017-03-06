@@ -1,0 +1,6 @@
+F:\Projects\SomaFm\Source\SomaFm.Setup\bin\Release\Soma FM.msi
+F:\Projects\SomaFm\Source\SomaFm.Setup\bin\Release\Soma FM.wixpdb
+obj\Release\Product.wixobj
+obj\Release\SomaFm.Setup.wixproj.BindContentsFileListnull.txt
+obj\Release\SomaFm.Setup.wixproj.BindOutputsFileListnull.txt
+obj\Release\SomaFm.Setup.wixproj.BindBuiltOutputsFileListnull.txt

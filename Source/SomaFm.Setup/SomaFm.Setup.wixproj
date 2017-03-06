@@ -6,7 +6,7 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>4aaadbdb-fdc0-4783-9d2a-1360718b8c2e</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>SomaFm.Setup</OutputName>
+    <OutputName>Soma FM</OutputName>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
@@ -24,12 +24,15 @@
     <Compile Include="Product.wxs" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
-  <!--
-	To modify your build process, add your task inside one of the targets below and uncomment it.
-	Other similar extension points exist, see Wix.targets.
-	<Target Name="BeforeBuild">
-	</Target>
+  <PropertyGroup>
+    <PostBuildEvent />
+  </PropertyGroup>
 	<Target Name="AfterBuild">
+		<GetAssemblyIdentity AssemblyFiles="..\SomaFm\bin\$(Configuration)\SomaFm.exe">
+			<Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
+		</GetAssemblyIdentity>
+		<Copy SourceFiles=".\bin\$(Configuration)\$(OutputName).msi" DestinationFiles=".\bin\$(Configuration)\$(OutputName) %(AssemblyVersion.Version).msi" />
+		<Delete Files=".\bin\$(Configuration)\$(OutputName).msi" />
+		<Delete Files=".\bin\$(Configuration)\*.wixpdb" />
 	</Target>
-	-->
 </Project>

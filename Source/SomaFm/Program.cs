@@ -1,32 +1,25 @@
-﻿
-// SomaFm.
-// A minimal radio player for the Windows Tray.
-
-
-using System;
+﻿using System;
 using System.IO;
 using System.Windows.Forms;
 
-
 namespace SomaFm
 {
-    internal class Program
-    {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        private static void Main()
-        {
-            // default path for the settings and the streams file:
-            String currentFolder = Util.ApplicationFolder;
-            String settingsFilepath = Path.Combine(currentFolder, "SomaFm.dat");
-            String streamsFilepath = Path.Combine(currentFolder, "Streams.ini");
+	internal class Program
+	{
+		/// <summary>
+		///    The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		private static void Main()
+		{
+			// Default path for the settings and the streams file:
+			var currentFolder = Util.ApplicationFolder;
+			var settingsFilepath = Path.Combine(currentFolder, "SomaFm.dat");
+			var streamsFilepath = Path.Combine(currentFolder, "Streams.ini");
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SomaFm(settingsFilepath, streamsFilepath));
-        }
-    }
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new SomaFm(settingsFilepath, streamsFilepath));
+		}
+	}
 }
-
