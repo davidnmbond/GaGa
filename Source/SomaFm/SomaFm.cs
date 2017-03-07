@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using LowKey;
 using SomaFm.Controls;
+using SomaFm.Libraries.LowKey;
 using SomaFm.NotifyIconPlayer;
 using SomaFm.StreamsFile;
 
@@ -212,9 +212,7 @@ namespace SomaFm
 			}
 			catch (Exception exception)
 			{
-				string text = exception.Message;
-				string caption = "Error opening streams file";
-				MessageBox.Show(text, caption);
+				MessageBox.Show(exception.Message, "Error opening streams file");
 			}
 		}
 
@@ -373,8 +371,8 @@ namespace SomaFm
 			double current = _balanceTrackBar.TrackBar.Value;
 			double maximum = _balanceTrackBar.TrackBar.Maximum;
 
-			double balance = current / maximum;
-			double percent = balance * 100;
+			var balance = current / maximum;
+			var percent = balance * 100;
 
 			_balanceTrackBar.Label.Text = "Balance  " + percent;
 			_player.Balance = balance;
@@ -389,8 +387,8 @@ namespace SomaFm
 			double current = _volumeTrackBar.TrackBar.Value;
 			double maximum = _volumeTrackBar.TrackBar.Maximum;
 
-			double volume = current / maximum;
-			double percent = volume * 100;
+			var volume = current / maximum;
+			var percent = volume * 100;
 
 			_volumeTrackBar.Label.Text = "Volume  " + percent;
 			_player.Volume = volume;
@@ -411,9 +409,7 @@ namespace SomaFm
 			{
 				_optionsEnableMultimediaKeysItem.Checked = KeyboardHook.Hooker.IsHooked;
 
-				string text = exception.Message;
-				string caption = "Error hooking multimedia keys";
-				MessageBox.Show(text, caption, MessageBoxButtons.OK);
+				MessageBox.Show(exception.Message, "Error hooking multimedia keys", MessageBoxButtons.OK);
 			}
 		}
 
@@ -421,7 +417,7 @@ namespace SomaFm
 		///    Stop the multimedia keys hook.
 		/// </summary>
 		/// <param name="quiet">Ignore exceptions instead of showing a message.</param>
-		private void MultimediaKeysUnhook(Boolean quiet = false)
+		private void MultimediaKeysUnhook(bool quiet = false)
 		{
 			try
 			{
@@ -434,9 +430,7 @@ namespace SomaFm
 
 				if (!quiet)
 				{
-					string text = exception.Message;
-					string caption = "Error unhooking multimedia keys";
-					MessageBox.Show(text, caption, MessageBoxButtons.OK);
+					MessageBox.Show(exception.Message, "Error unhooking multimedia keys", MessageBoxButtons.OK);
 				}
 			}
 		}
@@ -477,7 +471,7 @@ namespace SomaFm
 		/// <summary>
 		///    Allow control via mouse.
 		/// </summary>
-		private void OnIconMouseClick(Object sender, MouseEventArgs e)
+		private void OnIconMouseClick(object sender, MouseEventArgs e)
 		{
 			switch (e.Button)
 			{
@@ -563,7 +557,7 @@ namespace SomaFm
 		/// <summary>
 		///    Reading error clicked, show details. Suggest editing.
 		/// </summary>
-		private void OnErrorReadItemClick(Object sender, EventArgs e)
+		private void OnErrorReadItemClick(object sender, EventArgs e)
 		{
 			var item = (ToolStripMenuItem) sender;
 			var exception = (StreamsFileReadError) item.Tag;

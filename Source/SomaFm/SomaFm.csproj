@@ -54,7 +54,9 @@
     <Compile Include="Controls\ToolStripAeroRenderer.cs" />
     <Compile Include="Controls\ToolStripLabeledTrackBar.cs" />
     <Compile Include="Controls\Util.cs" />
-    <Compile Include="Libraries\LowKey\LowKey.cs" />
+    <Compile Include="Libraries\LowKey\KeyboardHookEventArgs.cs" />
+    <Compile Include="Libraries\LowKey\KeyboardHookException.cs" />
+    <Compile Include="Libraries\LowKey\KeyboardHook.cs" />
     <Compile Include="Libraries\mINI\mINI.cs" />
     <Compile Include="NotifyIconPlayer\Player.cs" />
     <Compile Include="NotifyIconPlayer\PlayerStream.cs" />

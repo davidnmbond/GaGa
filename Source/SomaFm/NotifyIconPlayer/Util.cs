@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.IO;
+﻿using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -13,10 +11,10 @@ namespace SomaFm.NotifyIconPlayer
 		///    Load an embedded resource as an icon.
 		/// </summary>
 		/// <param name="resource">Resource name, including namespace.</param>
-		public static Icon ResourceAsIcon(String resource)
+		public static Icon ResourceAsIcon(string resource)
 		{
-			Assembly assembly = Assembly.GetExecutingAssembly();
-			using (Stream stream = assembly.GetManifestResourceStream(resource))
+			var assembly = Assembly.GetExecutingAssembly();
+			using (var stream = assembly.GetManifestResourceStream(resource))
 			{
 				return new Icon(stream);
 			}
@@ -28,8 +26,9 @@ namespace SomaFm.NotifyIconPlayer
 		///    Strings longer than 63 characters are trimmed to 60 characters
 		///    with a "..." suffix.
 		/// </summary>
+		/// <param name="notifyIcon">The notify icon</param>
 		/// <param name="text">Tooltip text to display.</param>
-		public static void SetToolTipText(this NotifyIcon notifyIcon, String text)
+		public static void SetToolTipText(this NotifyIcon notifyIcon, string text)
 		{
 			if (text.Length > 63)
 			{

@@ -37,13 +37,9 @@ namespace SomaFm.Controls
 		{
 			try
 			{
-				object value = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", null);
+				var value = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\DWM", "ColorizationColor", null);
 
-				if (value == null)
-				{
-					return Color.Empty;
-				}
-				return Color.FromArgb((int) value);
+				return value == null ? Color.Empty : Color.FromArgb((int) value);
 			}
 			// unable to read registry or invalid value:
 			catch (Exception)

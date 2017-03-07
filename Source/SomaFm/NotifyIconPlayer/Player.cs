@@ -166,8 +166,8 @@ namespace SomaFm.NotifyIconPlayer
 			// if we only call .Stop(), the player continues downloading
 			// from online streams, but .Close() calls _mediaState.Init()
 			// changing the balance/volume, so save and restore them:
-			double balance = _player.Balance;
-			double volume = _player.Volume;
+			var balance = _player.Balance;
+			var volume = _player.Volume;
 
 			_player.Stop();
 			_player.Close();

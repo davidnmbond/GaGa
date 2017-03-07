@@ -35,7 +35,7 @@ namespace SomaFm.Controls
 		/// </summary>
 		public void UpdateColors()
 		{
-			Color aeroColor = Util.GetCurrentAeroColor();
+			var aeroColor = Util.GetCurrentAeroColor();
 
 			// unable to read it, fallback to default colors:
 			if (aeroColor == Color.Empty)
