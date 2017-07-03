@@ -76,8 +76,9 @@ namespace SomaFm.NotifyIconPlayer
 		/// </summary>
 		public double Balance
 		{
-			get { return _player.Balance; }
-			set { _player.Balance = value; }
+			// ReSharper disable once UnusedMember.Global
+			get => _player.Balance;
+			set => _player.Balance = value;
 		}
 
 		/// <summary>
@@ -85,8 +86,9 @@ namespace SomaFm.NotifyIconPlayer
 		/// </summary>
 		public double Volume
 		{
-			get { return _player.Volume; }
-			set { _player.Volume = value; }
+			// ReSharper disable once UnusedMember.Global
+			get => _player.Volume;
+			set => _player.Volume = value;
 		}
 
 		/// Icon handling
@@ -136,7 +138,7 @@ namespace SomaFm.NotifyIconPlayer
 		/// Player
 		/// <summary>
 		///    Open and play the current source stream.
-		///    Unmutes the player.
+		///    Un-mutes the player.
 		/// </summary>
 		public void Play()
 		{
@@ -154,7 +156,7 @@ namespace SomaFm.NotifyIconPlayer
 
 		/// <summary>
 		///    Stop playing and close the current stream.
-		///    Unmutes the player.
+		///    Un-mutes the player.
 		/// </summary>
 		public void Stop()
 		{
@@ -164,7 +166,7 @@ namespace SomaFm.NotifyIconPlayer
 
 			// corner case:
 			// if we only call .Stop(), the player continues downloading
-			// from online streams, but .Close() calls _mediaState.Init()
+			// from on-line streams, but .Close() calls _mediaState.Init()
 			// changing the balance/volume, so save and restore them:
 			var balance = _player.Balance;
 			var volume = _player.Volume;
@@ -209,6 +211,7 @@ namespace SomaFm.NotifyIconPlayer
 		/// <summary>
 		///    Mute the player.
 		/// </summary>
+		// ReSharper disable once MemberCanBePrivate.Global
 		public void Mute()
 		{
 			// do nothing if idle or already muted:
@@ -222,6 +225,7 @@ namespace SomaFm.NotifyIconPlayer
 		/// <summary>
 		///    Unmute the player.
 		/// </summary>
+		// ReSharper disable once MemberCanBePrivate.Global
 		public void UnMute()
 		{
 			// do nothing if idle or not muted:

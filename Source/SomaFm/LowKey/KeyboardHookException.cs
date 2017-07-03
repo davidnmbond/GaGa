@@ -1,6 +1,6 @@
 using System;
 
-namespace SomaFm.Libraries.LowKey
+namespace SomaFm.LowKey
 {
 	/// <summary>
 	///    All the exceptions that KeyboardHook raises are of this type.

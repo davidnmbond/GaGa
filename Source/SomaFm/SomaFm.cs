@@ -1,80 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Windows.Forms;
 using SomaFm.Controls;
-using SomaFm.Libraries.LowKey;
+using SomaFm.LowKey;
 using SomaFm.NotifyIconPlayer;
-using SomaFm.StreamsFile;
+using SomaFm.Properties;
+using SomaFm.Streams;
 
 namespace SomaFm
 {
 	internal class SomaFm : ApplicationContext
 	{
-		// audio submenu:
+		// Audio sub-menu:
 		private readonly ToolStripMenuItem _audioMenuItem;
 		private readonly ToolStripLabeledTrackBar _balanceTrackBar;
-		// gui components:
-		private readonly Container _container;
+		// GUI components:
 
 		// constant menu items:
 		private readonly ToolStripMenuItem _dynamicMenuMarker;
-		private readonly ToolStripMenuItem _editItem;
 		private readonly ToolStripMenuItem _errorOpenItem;
-		private readonly ToolStripMenuItem _errorReadItem;
 		private readonly ToolStripMenuItem _exitItem;
 		private readonly NotifyIcon _notifyIcon;
 		private readonly ToolStripMenuItem _optionsEnableAutoPlayItem;
 		private readonly ToolStripMenuItem _optionsEnableMultimediaKeysItem;
 
-		// options submenu:
+		// Options sub-menu:
 		private readonly ToolStripMenuItem _optionsMenuItem;
 
-		// player:
+		// Player:
 		private readonly Player _player;
-		private readonly SomaFmSettings _settings;
 
-		// settings:
-		private readonly string _settingsFilepath;
-		private readonly StreamsFileLoader _streamsFileLoader;
-
-		// streams:
-		private readonly string _streamsFilepath;
+		// Streams:
 		private readonly ToolStripAeroRenderer _toolStripRenderer;
 		private readonly ToolStripLabeledTrackBar _volumeTrackBar;
 
 		/// <summary>
 		///    SomaFm implementation.
 		/// </summary>
-		/// <param name="settingsFilepath">
-		///    Path to the settings file to use.
-		/// </param>
-		/// <param name="streamsFilepath">
-		///    Path to the streams file to use.
-		/// </param>
-		public SomaFm(string settingsFilepath, string streamsFilepath)
+		public SomaFm()
 		{
-			// gui components:
-			_container = new Container();
+			// GUI components:
+			var container = new Container();
 			_toolStripRenderer = new ToolStripAeroRenderer();
 
-			_notifyIcon = new NotifyIcon(_container)
+			_notifyIcon = new NotifyIcon(container)
 			{
 				ContextMenuStrip = new ContextMenuStrip {Renderer = _toolStripRenderer},
 				Visible = true
 			};
 
-			// settings:
-			_settingsFilepath = settingsFilepath;
-			_settings = SettingsLoad();
-
-			// streams:
-			_streamsFilepath = streamsFilepath;
-			_streamsFileLoader = new StreamsFileLoader(streamsFilepath);
-
-			// player:
+			// Player:
 			_player = new Player(_notifyIcon);
 
 			// constant menu items:
@@ -88,22 +64,12 @@ namespace SomaFm
 				Text = "Error opening streams file (click for details)"
 			};
 
-			_errorReadItem = new ToolStripMenuItem
-			{
-				Text = "Error reading streams file (click for details)"
-			};
-
-			_editItem = new ToolStripMenuItem
-			{
-				Text = "&Edit streams file"
-			};
-
 			_exitItem = new ToolStripMenuItem
 			{
 				Text = "E&xit"
 			};
 
-			// audio submenu:
+			// Audio sub-menu:
 			_audioMenuItem = new ToolStripMenuItem
 			{
 				Text = "Audio"
@@ -119,7 +85,7 @@ namespace SomaFm
 			_volumeTrackBar.TrackBar.Minimum = 0;
 			_volumeTrackBar.TrackBar.Maximum = 20;
 
-			// adjust the backcolor to the renderer:
+			// Adjust the background color to the renderer:
 			var back = _toolStripRenderer.ColorTable.ToolStripDropDownBackground;
 
 			_balanceTrackBar.BackColor = back;
@@ -132,7 +98,7 @@ namespace SomaFm
 			_audioMenuItem.DropDownItems.Add(_balanceTrackBar);
 			_audioMenuItem.DropDownItems.Add(_volumeTrackBar);
 
-			// options submenu:
+			// Options sub-menu:
 			_optionsMenuItem = new ToolStripMenuItem
 			{
 				Text = "Options"
@@ -159,24 +125,21 @@ namespace SomaFm
 			KeyboardHook.Hooker.Add("Volume Down", Keys.VolumeDown);
 
 			// apply settings before wiring events:
-			_balanceTrackBar.TrackBar.Value = _settings.LastBalanceTrackBarValue;
-			_volumeTrackBar.TrackBar.Value = _settings.LastVolumeTrackBarValue;
+			_balanceTrackBar.TrackBar.Value = Settings.Default.LastBalanceTrackBarValue;
+			_volumeTrackBar.TrackBar.Value = Settings.Default.LastVolumeTrackBarValue;
 
 			BalanceUpdate();
 			VolumeUpdate();
 
-			_player.Select(_settings.LastPlayerStream);
+			_player.Select(new PlayerStream(Settings.Default.LastPlayerStreamName, new Uri(Settings.Default.LastPlayerStreamUri)));
 
-			_optionsEnableAutoPlayItem.Checked = _settings.OptionsEnableAutoPlayChecked;
-			_optionsEnableMultimediaKeysItem.Checked = _settings.OptionsEnableMultimediaKeysChecked;
+			_optionsEnableAutoPlayItem.Checked = Settings.Default.OptionsEnableAutoPlayChecked;
+			_optionsEnableMultimediaKeysItem.Checked = Settings.Default.OptionsEnableMultimediaKeysChecked;
 
 			// wire events:
 			_notifyIcon.ContextMenuStrip.Opening += OnMenuOpening;
 			_notifyIcon.MouseClick += OnIconMouseClick;
 
-			_errorOpenItem.Click += OnErrorOpenItemClick;
-			_errorReadItem.Click += OnErrorReadItemClick;
-			_editItem.Click += OnEditItemClick;
 			_exitItem.Click += OnExitItemClick;
 
 			_balanceTrackBar.TrackBar.ValueChanged += OnBalanceTrackBarChanged;
@@ -196,65 +159,6 @@ namespace SomaFm
 			if (_optionsEnableMultimediaKeysItem.Checked)
 			{
 				MultimediaKeysHook();
-			}
-		}
-
-		/// Streams file
-		/// <summary>
-		///    Open the streams file with the default program
-		///    associated to the extension.
-		/// </summary>
-		private void StreamsFileOpen()
-		{
-			try
-			{
-				Process.Start(_streamsFilepath);
-			}
-			catch (Exception exception)
-			{
-				MessageBox.Show(exception.Message, "Error opening streams file");
-			}
-		}
-
-		/// Settings file
-		/// <summary>
-		///    Load the settings from our settings filepath if it exists.
-		///    Return default settings otherwise.
-		/// </summary>
-		private SomaFmSettings SettingsLoad()
-		{
-			try
-			{
-				if (File.Exists(_settingsFilepath))
-				{
-					return (SomaFmSettings) Util.Deserialize(_settingsFilepath);
-				}
-			}
-			catch (Exception exception)
-			{
-				MessageBox.Show(
-					"Unable to load settings: \n" + $"{_settingsFilepath} \n\n" + "This usually means that the file is corrupt, empty \n" + "or incompatible with the current SomaFm version. \n\n" + "Exception message: \n" + $"{exception.Message} \n",
-					"Error loading settings file");
-			}
-
-			// unable to load or doesn't exist, use defaults:
-			return new SomaFmSettings();
-		}
-
-		/// <summary>
-		///    Save the current settings.
-		/// </summary>
-		private void SettingsSave()
-		{
-			try
-			{
-				Util.Serialize(_settings, _settingsFilepath);
-			}
-			catch (Exception exception)
-			{
-				MessageBox.Show(
-					"Unable to save settings: \n" + $"{_settingsFilepath} \n\n" + "Exception message: \n" + $"{exception.Message} \n",
-					"Error saving settings file");
 			}
 		}
 
@@ -305,19 +209,8 @@ namespace SomaFm
 			try
 			{
 				MenuClear();
-				_streamsFileLoader.LoadTo(menu, OnStreamItemClick);
+				StreamsReader.Read(menu, OnStreamItemClick);
 				menu.Items.Add(_dynamicMenuMarker);
-
-				_editItem.Enabled = true;
-			}
-			catch (StreamsFileReadError exception)
-			{
-				MenuClear();
-				menu.Items.Add(_dynamicMenuMarker);
-				menu.Items.Add(_errorReadItem);
-
-				_errorReadItem.Tag = exception;
-				_editItem.Enabled = true;
 			}
 			catch (Exception exception)
 			{
@@ -326,10 +219,8 @@ namespace SomaFm
 				menu.Items.Add(_errorOpenItem);
 
 				_errorOpenItem.Tag = exception;
-				_editItem.Enabled = false;
 			}
 
-			menu.Items.Add(_editItem);
 			menu.Items.Add("-");
 			menu.Items.Add(_audioMenuItem);
 			menu.Items.Add(_optionsMenuItem);
@@ -349,10 +240,7 @@ namespace SomaFm
 			// suspend/resume layout before/after reloading:
 			_notifyIcon.ContextMenuStrip.SuspendLayout();
 
-			if (_streamsFileLoader.MustReload())
-			{
-				MenuUpdate();
-			}
+			MenuUpdate();
 
 			_toolStripRenderer.UpdateColors();
 
@@ -542,44 +430,6 @@ namespace SomaFm
 		}
 
 		/// <summary>
-		///    Opening error clicked, show details.
-		/// </summary>
-		private void OnErrorOpenItemClick(object sender, EventArgs e)
-		{
-			var item = (ToolStripMenuItem) sender;
-			var exception = (Exception) item.Tag;
-
-			var text = exception.Message;
-			var caption = "Error opening streams file";
-			MessageBox.Show(text, caption, MessageBoxButtons.OK);
-		}
-
-		/// <summary>
-		///    Reading error clicked, show details. Suggest editing.
-		/// </summary>
-		private void OnErrorReadItemClick(object sender, EventArgs e)
-		{
-			var item = (ToolStripMenuItem) sender;
-			var exception = (StreamsFileReadError) item.Tag;
-
-			var text = $"{exception.FilePath} \n" + $"Error at line {exception.LineNumber}: {exception.Message} \n\n" + $"{exception.Line} \n\n" + "Do you want to open the streams file now?";
-
-			var caption = "Error reading streams file";
-			if (Util.MessageBoxYesNo(text, caption))
-			{
-				StreamsFileOpen();
-			}
-		}
-
-		/// <summary>
-		///    Edit clicked, open the streams file.
-		/// </summary>
-		private void OnEditItemClick(object sender, EventArgs e)
-		{
-			StreamsFileOpen();
-		}
-
-		/// <summary>
 		///    Balance changed, update label and send new value to the player.
 		/// </summary>
 		private void OnBalanceTrackBarChanged(object sender, EventArgs e)
@@ -617,12 +467,12 @@ namespace SomaFm
 		{
 			_player.Stop();
 
-			_settings.LastBalanceTrackBarValue = _balanceTrackBar.TrackBar.Value;
-			_settings.LastVolumeTrackBarValue = _volumeTrackBar.TrackBar.Value;
-			_settings.LastPlayerStream = _player.Source;
-			_settings.OptionsEnableAutoPlayChecked = _optionsEnableAutoPlayItem.Checked;
-			_settings.OptionsEnableMultimediaKeysChecked = _optionsEnableMultimediaKeysItem.Checked;
-			SettingsSave();
+			Settings.Default.LastBalanceTrackBarValue = _balanceTrackBar.TrackBar.Value;
+			Settings.Default.LastVolumeTrackBarValue = _volumeTrackBar.TrackBar.Value;
+			Settings.Default.LastPlayerStreamName = _player.Source.Name;
+			Settings.Default.LastPlayerStreamUri = _player.Source.Uri.AbsoluteUri;
+			Settings.Default.OptionsEnableAutoPlayChecked = _optionsEnableAutoPlayItem.Checked;
+			Settings.Default.OptionsEnableMultimediaKeysChecked = _optionsEnableMultimediaKeysItem.Checked;
 
 			// unhook, but don't be annoying with error messages on shutdown:
 			if (_optionsEnableMultimediaKeysItem.Checked)

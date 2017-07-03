@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Windows.Threading;
 
-namespace SomaFm.Libraries.LowKey
+namespace SomaFm.LowKey
 {
 	/// <summary>
 	///    The LowKey keyboard hooker.
@@ -14,74 +14,74 @@ namespace SomaFm.Libraries.LowKey
 	public class KeyboardHook : IDisposable
 	{
 		/// Private Windows API declarations
-		private const int VK_SHIFT = 0x10;
+		private const int VkShift = 0x10;
 
-		private const int VK_CONTROL = 0x11;
-		private const int VK_MENU = 0x12;
+		private const int VkControl = 0x11;
+		private const int VkMenu = 0x12;
 
-		private const int WH_KEYBOARD_LL = 13;
+		private const int WhKeyboardLl = 13;
 
-		private const int WM_SYSKEYDOWN = 0x0104;
-		private const int WM_SYSKEYUP = 0x0105;
-		private const int WM_KEYDOWN = 0x0100;
-		private const int WM_KEYUP = 0x0101;
+		private const int WmSyskeydown = 0x0104;
+		private const int WmSyskeyup = 0x0105;
+		private const int WmKeydown = 0x0100;
+		private const int WmKeyup = 0x0101;
 
 		/// <summary>
 		///    Needed to avoid the delegate being garbage-collected.
 		/// </summary>
-		private static HOOKPROC hookedCallback;
+		private static Hookproc _hookedCallback;
 
 		/// <summary>
 		///    Hooker instance.
 		/// </summary>
-		private static KeyboardHook instance;
+		private static KeyboardHook _instance;
 
 		/// <summary>
 		///    Current dispatcher.
 		/// </summary>
-		private readonly Dispatcher dispatcher;
+		private readonly Dispatcher _dispatcher;
 
 		/// <summary>
-		///    Virtual key code -> set of modifiers for all the hotkeys.
+		///    Virtual key code -> set of modifiers for all the hot keys.
 		/// </summary>
-		private readonly Dictionary<int, HashSet<Keys>> hotkeys;
+		private readonly Dictionary<int, HashSet<Keys>> _hotKeys;
 
 		/// <summary>
-		///    A map from hotkeys to a boolean indicating whether
-		///    we should forward the keypress to further applications.
+		///    A map from hot keys to a boolean indicating whether
+		///    we should forward the key press to further applications.
 		/// </summary>
-		private readonly Dictionary<Hotkey, bool> hotkeysForward;
+		private readonly Dictionary<Hotkey, bool> _hotKeysForward;
 
 		/// <summary>
-		///    A map from hotkeys to names.
+		///    A map from hot keys to names.
 		/// </summary>
-		private readonly Dictionary<Hotkey, string> hotkeysToNames;
+		private readonly Dictionary<Hotkey, string> _hotKeysToNames;
 
 		/// <summary>
-		///    A map from names to hotkeys.
+		///    A map from names to hot keys.
 		/// </summary>
-		private readonly Dictionary<string, Hotkey> namesToHotkeys;
+		private readonly Dictionary<string, Hotkey> _namesToHotKeys;
 
 		/// <summary>
 		///    Hook ID.
 		///    Will be IntPtr.Zero when not currently hooked.
 		/// </summary>
-		private IntPtr hookID;
+		private IntPtr _hookId;
 
 		/// <summary>
 		///    Create a new keyboard hooker instance.
 		/// </summary>
 		private KeyboardHook()
 		{
-			hotkeys = new Dictionary<int, HashSet<Keys>>();
+			_hotKeys = new Dictionary<int, HashSet<Keys>>();
 
-			hotkeysToNames = new Dictionary<Hotkey, string>();
-			namesToHotkeys = new Dictionary<string, Hotkey>();
-			hotkeysForward = new Dictionary<Hotkey, bool>();
+			_hotKeysToNames = new Dictionary<Hotkey, string>();
+			_namesToHotKeys = new Dictionary<string, Hotkey>();
+			_hotKeysForward = new Dictionary<Hotkey, bool>();
 
-			dispatcher = Dispatcher.CurrentDispatcher;
-			hookID = IntPtr.Zero;
-			hookedCallback = Callback;
+			_dispatcher = Dispatcher.CurrentDispatcher;
+			_hookId = IntPtr.Zero;
+			_hookedCallback = Callback;
 		}
 
 		/// <summary>
@@ -94,13 +94,13 @@ namespace SomaFm.Libraries.LowKey
 			{
 				var modifiers = Keys.None;
 
-				if ((GetAsyncKeyState(VK_MENU) & 0x8000) != 0)
+				if ((GetAsyncKeyState(VkMenu) & 0x8000) != 0)
 					modifiers |= Keys.Alt;
 
-				if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0)
+				if ((GetAsyncKeyState(VkControl) & 0x8000) != 0)
 					modifiers |= Keys.Control;
 
-				if ((GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0)
+				if ((GetAsyncKeyState(VkShift) & 0x8000) != 0)
 					modifiers |= Keys.Shift;
 
 				return modifiers;
@@ -111,34 +111,35 @@ namespace SomaFm.Libraries.LowKey
 		/// <summary>
 		///    Get the hooker instance.
 		/// </summary>
-		public static KeyboardHook Hooker => instance ?? (instance = new KeyboardHook());
+		public static KeyboardHook Hooker => _instance ?? (_instance = new KeyboardHook());
 
 		/// <summary>
 		///    Determine whether the hook is currently active.
 		/// </summary>
-		public bool IsHooked => hookID != IntPtr.Zero;
+		public bool IsHooked => _hookId != IntPtr.Zero;
 
 		/// <summary>
 		///    Dispose the hooker.
 		/// </summary>
 		public void Dispose()
 		{
-			if (hookID != IntPtr.Zero)
+			if (_hookId != IntPtr.Zero)
 			{
 				Unhook();
 			}
 
-			instance = null;
+			_instance = null;
 		}
 
 		/// Events
 		/// <summary>
-		///    Fired when a registered hotkey is released.
+		///    Fired when a registered hot key is released.
 		/// </summary>
+		// ReSharper disable once EventNeverSubscribedTo.Global
 		public event EventHandler<KeyboardHookEventArgs> HotkeyUp;
 
 		/// <summary>
-		///    Fired when a registered hotkey is pressed.
+		///    Fired when a registered hot key is pressed.
 		/// </summary>
 		public event EventHandler<KeyboardHookEventArgs> HotkeyDown;
 
@@ -152,10 +153,10 @@ namespace SomaFm.Libraries.LowKey
 		}
 
 		/// <summary>
-		///    Add the specified hotkey to the hooker.
+		///    Add the specified hot key to the hooker.
 		/// </summary>
 		/// <param name="name">
-		///    Hotkey name.
+		///    Hot key name.
 		/// </param>
 		/// <param name="key">
 		///    Base key.
@@ -165,31 +166,31 @@ namespace SomaFm.Libraries.LowKey
 		///    e.g: Keys.Control | Keys.Alt.
 		/// </param>
 		/// <param name="forward">
-		///    Whether the keypress should be forwarded to
+		///    Whether the key press should be forwarded to
 		///    other applications.
 		/// </param>
 		public void Add(string name, Keys key, Keys modifiers = Keys.None, bool forward = false)
 		{
 			// check name:
 			if (name == null)
-				throw new KeyboardHookException("Invalid hotkey name.");
+				throw new KeyboardHookException("Invalid hot key name.");
 
-			if (namesToHotkeys.ContainsKey(name))
-				throw new KeyboardHookException($"Duplicate hotkey name: {name}.");
+			if (_namesToHotKeys.ContainsKey(name))
+				throw new KeyboardHookException($"Duplicate hot key name: {name}.");
 
 			// check key code and modifiers:
 			var vkCode = (int) key;
 
 			// known base key:
-			if (hotkeys.ContainsKey(vkCode))
+			if (_hotKeys.ContainsKey(vkCode))
 			{
 				// check that modifiers are new:
-				var currentModifiers = hotkeys[vkCode];
+				var currentModifiers = _hotKeys[vkCode];
 				if (currentModifiers.Contains(modifiers))
 				{
 					var previousHotkey = new Hotkey(key, modifiers);
 					throw new KeyboardHookException(
-						$"Hotkey: {name} already registered as: {hotkeysToNames[previousHotkey]}."
+						$"Hot key: {name} already registered as: {_hotKeysToNames[previousHotkey]}."
 					);
 				}
 
@@ -198,60 +199,61 @@ namespace SomaFm.Libraries.LowKey
 			// new base key:
 			else
 			{
-				hotkeys[vkCode] = new HashSet<Keys> {modifiers};
+				_hotKeys[vkCode] = new HashSet<Keys> {modifiers};
 			}
 
-			// add it to the lookup dicts:
+			// add it to the lookup dictionaries:
 			var hotkey = new Hotkey(key, modifiers);
 
-			hotkeysToNames[hotkey] = name;
-			namesToHotkeys[name] = hotkey;
-			hotkeysForward[hotkey] = forward;
+			_hotKeysToNames[hotkey] = name;
+			_namesToHotKeys[name] = hotkey;
+			_hotKeysForward[hotkey] = forward;
 		}
 
 		/// <summary>
-		///    Remove the specified hotkey.
+		///    Remove the specified hot key.
 		/// </summary>
 		/// <param name="name">
-		///    Hotkey name that was specified when calling Add().
+		///    Hot key name that was specified when calling Add().
 		/// </param>
-		public void Remove(string name)
+		private void Remove(string name)
 		{
 			// check the name:
 			if (name == null)
-				throw new KeyboardHookException("Invalid hotkey name.");
+				throw new KeyboardHookException("Invalid hot key name.");
 
-			if (!namesToHotkeys.ContainsKey(name))
-				throw new KeyboardHookException($"Unknown hotkey name: {name}.");
+			if (!_namesToHotKeys.ContainsKey(name))
+				throw new KeyboardHookException($"Unknown hot key name: {name}.");
 
-			var hotkey = namesToHotkeys[name];
+			var hotkey = _namesToHotKeys[name];
 
-			// remove from all dicts:
+			// remove from all dictionaries:
 			var vkCode = (int) hotkey.Key;
 			var modifiers = hotkey.Modifiers;
 
-			hotkeys[vkCode].Remove(modifiers);
-			hotkeysToNames.Remove(hotkey);
-			namesToHotkeys.Remove(name);
-			hotkeysForward.Remove(hotkey);
+			_hotKeys[vkCode].Remove(modifiers);
+			_hotKeysToNames.Remove(hotkey);
+			_namesToHotKeys.Remove(name);
+			_hotKeysForward.Remove(hotkey);
 		}
 
 		/// <summary>
-		///    Remove all the registered hotkeys.
+		///    Remove all the registered hot keys.
 		/// </summary>
+		// ReSharper disable once UnusedMember.Global
 		public void Clear()
 		{
-			hotkeys.Clear();
-			hotkeysToNames.Clear();
-			namesToHotkeys.Clear();
-			hotkeysForward.Clear();
+			_hotKeys.Clear();
+			_hotKeysToNames.Clear();
+			_namesToHotKeys.Clear();
+			_hotKeysForward.Clear();
 		}
 
 		/// <summary>
-		///    Modify a hotkey binding.
+		///    Modify a hot key binding.
 		/// </summary>
 		/// <param name="name">
-		///    Hotkey name that was specified when calling Add().
+		///    Hot key name that was specified when calling Add().
 		/// </param>
 		/// <param name="key">
 		///    New base key.
@@ -260,9 +262,10 @@ namespace SomaFm.Libraries.LowKey
 		///    New modifiers.
 		/// </param>
 		/// <param name="forward">
-		///    Whether the keypress should be forwarded to
+		///    Whether the key press should be forwarded to
 		///    other applications.
 		/// </param>
+		// ReSharper disable once UnusedMember.Global
 		public void Rebind(string name, Keys key, Keys modifiers = Keys.None, bool forward = false)
 		{
 			Remove(name);
@@ -275,7 +278,7 @@ namespace SomaFm.Libraries.LowKey
 		public void Hook()
 		{
 			// don't hook twice:
-			if (hookID != IntPtr.Zero)
+			if (_hookId != IntPtr.Zero)
 			{
 				throw new KeyboardHookException("Keyboard hook already active. Call Unhook() first.");
 			}
@@ -285,10 +288,10 @@ namespace SomaFm.Libraries.LowKey
 				using (var module = process.MainModule)
 				{
 					var hMod = GetModuleHandle(module.ModuleName);
-					hookID = SetWindowsHookEx(WH_KEYBOARD_LL, hookedCallback, hMod, 0);
+					_hookId = SetWindowsHookEx(WhKeyboardLl, _hookedCallback, hMod, 0);
 
 					// when SetWindowsHookEx fails, the result is NULL:
-					if (hookID == IntPtr.Zero)
+					if (_hookId == IntPtr.Zero)
 					{
 						throw new KeyboardHookException("SetWindowsHookEx() failed: " + LastWin32Error());
 					}
@@ -302,18 +305,18 @@ namespace SomaFm.Libraries.LowKey
 		public void Unhook()
 		{
 			// not hooked:
-			if (hookID == IntPtr.Zero)
+			if (_hookId == IntPtr.Zero)
 			{
 				throw new KeyboardHookException("Keyboard hook not currently active. Call Hook() first.");
 			}
 
 			// when UnhookWindowsHookEx fails, the result is false:
-			if (!UnhookWindowsHookEx(hookID))
+			if (!UnhookWindowsHookEx(_hookId))
 			{
 				throw new KeyboardHookException("UnhookWindowsHookEx() failed: " + LastWin32Error());
 			}
 
-			hookID = IntPtr.Zero;
+			_hookId = IntPtr.Zero;
 		}
 
 		/// Actual hooker callback
@@ -322,49 +325,49 @@ namespace SomaFm.Libraries.LowKey
 		/// </summary>
 		private IntPtr Callback(int nCode, IntPtr wParam, IntPtr lParam)
 		{
-			// assume the hotkey won't match and will be forwarded:
+			// assume the hot key won't match and will be forwarded:
 			var forward = true;
 
 			if (nCode >= 0)
 			{
 				var msg = wParam.ToInt32();
 
-				// we care about keyup/keydown messages:
-				if (msg == WM_KEYUP || msg == WM_SYSKEYUP || msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN)
+				// we care about key up / key down messages:
+				if (msg == WmKeyup || msg == WmSyskeyup || msg == WmKeydown || msg == WmSyskeydown)
 				{
 					// the virtual key code is the first KBDLLHOOKSTRUCT member:
 					var vkCode = Marshal.ReadInt32(lParam);
 
 					// base key matches?
-					if (hotkeys.ContainsKey(vkCode))
+					if (_hotKeys.ContainsKey(vkCode))
 					{
 						var modifiers = PressedModifiers;
 
 						// modifiers match?
-						if (hotkeys[vkCode].Contains(modifiers))
+						if (_hotKeys[vkCode].Contains(modifiers))
 						{
 							var key = (Keys) vkCode;
 							var hotkey = new Hotkey(key, modifiers);
-							var name = hotkeysToNames[hotkey];
+							var name = _hotKeysToNames[hotkey];
 
-							// override forward with the current hotkey option:
-							forward = hotkeysForward[hotkey];
+							// override forward with the current hot key option:
+							forward = _hotKeysForward[hotkey];
 
 							var e = new KeyboardHookEventArgs(name, key, modifiers);
 
 							// call the appropriate event handler using the current dispatcher:
-							if (msg == WM_KEYUP || msg == WM_SYSKEYUP)
+							if (msg == WmKeyup || msg == WmSyskeyup)
 							{
 								if (HotkeyUp != null)
 								{
-									dispatcher.BeginInvoke(HotkeyUp, instance, e);
+									_dispatcher.BeginInvoke(HotkeyUp, _instance, e);
 								}
 							}
 							else
 							{
 								if (HotkeyDown != null)
 								{
-									dispatcher.BeginInvoke(HotkeyDown, instance, e);
+									_dispatcher.BeginInvoke(HotkeyDown, _instance, e);
 								}
 							}
 						}
@@ -375,13 +378,13 @@ namespace SomaFm.Libraries.LowKey
 			// forward or return a dummy value other than 0:
 			if (forward)
 			{
-				return CallNextHookEx(hookID, nCode, wParam, lParam);
+				return CallNextHookEx(_hookId, nCode, wParam, lParam);
 			}
 			return new IntPtr(1);
 		}
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		private static extern IntPtr SetWindowsHookEx(int idHook, HOOKPROC lpfn, IntPtr hMod, uint dwThreadId);
+		private static extern IntPtr SetWindowsHookEx(int idHook, Hookproc lpfn, IntPtr hMod, uint dwThreadId);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -419,6 +422,6 @@ namespace SomaFm.Libraries.LowKey
 			}
 		}
 
-		private delegate IntPtr HOOKPROC(int nCode, IntPtr wParam, IntPtr lParam);
+		private delegate IntPtr Hookproc(int nCode, IntPtr wParam, IntPtr lParam);
 	}
 }

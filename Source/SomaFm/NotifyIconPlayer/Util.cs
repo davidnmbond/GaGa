@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -16,7 +17,7 @@ namespace SomaFm.NotifyIconPlayer
 			var assembly = Assembly.GetExecutingAssembly();
 			using (var stream = assembly.GetManifestResourceStream(resource))
 			{
-				return new Icon(stream);
+				return new Icon(stream ?? throw new Exception("Icon resource missing"));
 			}
 		}
 

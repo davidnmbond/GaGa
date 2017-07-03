@@ -21,6 +21,10 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
 [assembly: Guid("371d5ba3-3084-4b40-9c7a-a9d29d7dd264")]
+[assembly: AssemblyTitle("Soma FM")]
+[assembly: AssemblyProduct("Soma FM")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
 
 // Version information for an assembly consists of the following four values:
 //

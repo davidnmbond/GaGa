@@ -1,7 +1,8 @@
-F:\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.dat
-F:\Projects\SomaFm\Source\SomaFm\bin\Release\Streams.ini
 F:\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.exe
 F:\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.pdb
 F:\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.exe
 F:\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.pdb
 F:\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.csprojResolveAssemblyReference.cache
+F:\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.exe.config
+F:\Projects\SomaFm\Source\SomaFm\bin\Release\Newtonsoft.Json.dll
+F:\Projects\SomaFm\Source\SomaFm\bin\Release\Newtonsoft.Json.xml
