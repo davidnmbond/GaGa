@@ -1,25 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="Soma FM" Language="1033" Version="!(bind.FileVersion.SomaFm.exe)" Manufacturer="David Bond" UpgradeCode="33cf1d20-b823-48af-93e0-0fbd9cf8cd99">
+	<Product Id="*" Name="Soma FM" Language="1033" Version="!(bind.FileVersion.SomaFm.exe)" Manufacturer="David Bond"
+	         UpgradeCode="33cf1d20-b823-48af-93e0-0fbd9cf8cd99">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<Media Id="1" Cabinet="cab1.cab" EmbedCab="yes" />
 
-	<DirectoryRef Id="ApplicationProgramsFolder">
+		<!-- Autostart on exit -->
+		<UI>
+			<UIRef Id="WixUI_Minimal" />
+			<Publish Dialog="ExitDialog"
+			         Control="Finish" 
+			         Event="DoAction" 
+			         Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+		</UI>
+		<Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Soma FM and start Groove Salad" />
+		<Property Id="WixShellExecTarget" Value="[#SomaFm.exe]" />
+		<CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+		
+		<!-- Logo -->
+		<Icon Id="SomaFmLogo.ico" SourceFile="SomaFmLogo.ico" />
+		<Property Id="ARPPRODUCTICON" Value="SomaFmLogo.ico" />
+	
+		<DirectoryRef Id="ApplicationProgramsFolder">
 			<Component Id="ApplicationShortcut" Guid="59BA36CD-349C-4D0C-80C8-E0290952F831">
 				<Shortcut Id="ApplicationStartMenuShortcut"
-							 Name="Soma FM"
-							 Description="Soma FM Tray player"
-							 Target="[#SomaFm.exe]"
-							 WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
-				<RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
-				<RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+				          Name="Soma FM"
+				          Description="Soma FM Tray player"
+				          Target="[#SomaFm.exe]"
+				          WorkingDirectory="APPLICATIONROOTDIRECTORY" />
+				<RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1"
+				               KeyPath="yes" />
 			</Component>
 		</DirectoryRef>
 
 
-	<Feature Id="ProductFeature" Title="Soma FM Tray Icon" Level="1">
+		<Feature Id="ProductFeature" Title="Soma FM Tray Icon" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
@@ -32,17 +51,19 @@
 				</Directory>
 			</Directory>
 			<Directory Id="ProgramMenuFolder">
-				<Directory Id="ApplicationProgramsFolder" Name="Soma FM"/>
+				<Directory Id="ApplicationProgramsFolder" Name="Soma FM" />
 			</Directory>
 		</Directory>
 	</Fragment>
 
-	
+
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			 <Component Id="ProductComponent">
-				 <File Id="SomaFm.exe" Name="SomaFm.exe" Source="$(var.ProjectDir)..\SomaFm\bin\Release\SomaFm.exe" />
-			 </Component>
+			<Component Id="ProductComponent" Guid="{2aca436e-548f-48fe-9faa-da6cbe10378f}">
+				<File Id="SomaFm.exe" Name="SomaFm.exe" Source="$(var.ProjectDir)..\SomaFm\bin\Release\SomaFm.exe" />
+				<File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll"
+				      Source="$(var.ProjectDir)..\SomaFm\bin\Release\Newtonsoft.Json.dll" />
+			</Component>
 		</ComponentGroup>
 	</Fragment>
 </Wix>

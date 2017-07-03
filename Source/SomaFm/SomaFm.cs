@@ -19,7 +19,6 @@ namespace SomaFm
 
 		// constant menu items:
 		private readonly ToolStripMenuItem _dynamicMenuMarker;
-		private readonly ToolStripMenuItem _errorOpenItem;
 		private readonly ToolStripMenuItem _exitItem;
 		private readonly NotifyIcon _notifyIcon;
 		private readonly ToolStripMenuItem _optionsEnableAutoPlayItem;
@@ -57,11 +56,6 @@ namespace SomaFm
 			_dynamicMenuMarker = new ToolStripMenuItem
 			{
 				Visible = false
-			};
-
-			_errorOpenItem = new ToolStripMenuItem
-			{
-				Text = "Error opening streams file (click for details)"
 			};
 
 			_exitItem = new ToolStripMenuItem
@@ -216,9 +210,10 @@ namespace SomaFm
 			{
 				MenuClear();
 				menu.Items.Add(_dynamicMenuMarker);
-				menu.Items.Add(_errorOpenItem);
-
-				_errorOpenItem.Tag = exception;
+				menu.Items.Add(new ToolStripMenuItem
+				{
+					Text = $"Error opening streams file ({exception.Message})"
+				});
 			}
 
 			menu.Items.Add("-");
@@ -473,6 +468,7 @@ namespace SomaFm
 			Settings.Default.LastPlayerStreamUri = _player.Source.Uri.AbsoluteUri;
 			Settings.Default.OptionsEnableAutoPlayChecked = _optionsEnableAutoPlayItem.Checked;
 			Settings.Default.OptionsEnableMultimediaKeysChecked = _optionsEnableMultimediaKeysItem.Checked;
+			Settings.Default.Save();
 
 			// unhook, but don't be annoying with error messages on shutdown:
 			if (_optionsEnableMultimediaKeysItem.Checked)

@@ -5,6 +5,8 @@ namespace SomaFm
 {
 	internal static class Program
 	{
+		private static SomaFm _somaFm;
+
 		/// <summary>
 		///    The main entry point for the application.
 		/// </summary>
@@ -13,7 +15,19 @@ namespace SomaFm
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new SomaFm());
+			AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+			_somaFm = new SomaFm();
+			Application.Run(_somaFm);
+		}
+
+		/// <summary>
+		/// Permits clean exit/disposal when the thread is being killed.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private static void OnProcessExit(object sender, EventArgs e)
+		{
+			_somaFm.Dispose();
 		}
 	}
 }

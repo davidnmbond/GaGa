@@ -1,1 +1,2 @@
+F:\Projects\SomaFm\Source\SomaFm.Setup\..\SomaFm\bin\Release\Newtonsoft.Json.dll
 F:\Projects\SomaFm\Source\SomaFm.Setup\..\SomaFm\bin\Release\SomaFm.exe
