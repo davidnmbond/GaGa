@@ -23,6 +23,13 @@
 		<!-- Logo -->
 		<Icon Id="SomaFmLogo.ico" SourceFile="SomaFmLogo.ico" />
 		<Property Id="ARPPRODUCTICON" Value="SomaFmLogo.ico" />
+
+		<!-- EULA -->
+		<WixVariable Id="WixUILicenseRtf" Value="EULA.rtf" />
+		
+		<!-- Artwork -->
+		<WixVariable Id="WixUIBannerBmp" Value="WixUIBannerBmp.bmp" />
+		<WixVariable Id="WixUIDialogBmp" Value="WixUIDialogBmp.bmp" />
 	
 		<DirectoryRef Id="ApplicationProgramsFolder">
 			<Component Id="ApplicationShortcut" Guid="59BA36CD-349C-4D0C-80C8-E0290952F831">

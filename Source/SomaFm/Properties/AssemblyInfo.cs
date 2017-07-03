@@ -23,8 +23,8 @@ using System.Runtime.InteropServices;
 [assembly: Guid("371d5ba3-3084-4b40-9c7a-a9d29d7dd264")]
 [assembly: AssemblyTitle("Soma FM")]
 [assembly: AssemblyProduct("Soma FM")]
-[assembly: AssemblyVersion("1.1.5.0")]
-[assembly: AssemblyFileVersion("1.1.5.0")]
+[assembly: AssemblyVersion("1.1.6.0")]
+[assembly: AssemblyFileVersion("1.1.6.0")]
 
 // Version information for an assembly consists of the following four values:
 //
