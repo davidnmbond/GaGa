@@ -42,8 +42,6 @@
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			 <Component Id="ProductComponent">
 				 <File Id="SomaFm.exe" Name="SomaFm.exe" Source="$(var.ProjectDir)..\SomaFm\bin\Release\SomaFm.exe" />
-				 <File Id="Streams.ini" Name="Streams.ini" Source="$(var.ProjectDir)..\SomaFm\bin\Release\Streams.ini" />
-				 <File Id="SomaFm.dat" Name="SomaFm.dat" Source="$(var.ProjectDir)..\SomaFm\bin\Release\SomaFm.dat" />
 			 </Component>
 		</ComponentGroup>
 	</Fragment>
