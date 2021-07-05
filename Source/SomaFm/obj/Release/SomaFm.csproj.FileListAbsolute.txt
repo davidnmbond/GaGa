@@ -5,3 +5,13 @@ F:\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.pdb
 F:\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.exe.config
 F:\Projects\SomaFm\Source\SomaFm\bin\Release\Newtonsoft.Json.dll
 F:\Projects\SomaFm\Source\SomaFm\bin\Release\Newtonsoft.Json.xml
+C:\Users\david\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.csproj.CoreCompileInputs.cache
+C:\Users\david\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.csproj.AssemblyReference.cache
+C:\Users\david\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.exe.config
+C:\Users\david\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.exe
+C:\Users\david\Projects\SomaFm\Source\SomaFm\bin\Release\SomaFm.pdb
+C:\Users\david\Projects\SomaFm\Source\SomaFm\bin\Release\Newtonsoft.Json.dll
+C:\Users\david\Projects\SomaFm\Source\SomaFm\bin\Release\Newtonsoft.Json.xml
+C:\Users\david\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.csproj.CopyComplete
+C:\Users\david\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.exe
+C:\Users\david\Projects\SomaFm\Source\SomaFm\obj\Release\SomaFm.pdb
